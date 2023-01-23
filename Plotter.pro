@@ -9,11 +9,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    commondesignes.cpp \
+    inputfunctionform.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainform.cpp \
+    mainwindow.cpp \
+    plotterform.cpp
 
 HEADERS += \
-    mainwindow.h
+    commondesignes.h \
+    constants.h \
+    inputfunctionform.h \
+    mainform.h \
+    mainwindow.h \
+    plotterform.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

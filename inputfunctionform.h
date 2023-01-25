@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QLineEdit>
+#include <QPushButton>
 
 class InputFunctionForm : public QWidget
 {
@@ -26,6 +27,10 @@ private:
     void setOperand(const QString& operand);
 
 signals:
+    void stringToValidCheck(const QString& equation);
+
+private slots:
+    void getStringFromInput();
 
 };
 

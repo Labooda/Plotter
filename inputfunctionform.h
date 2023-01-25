@@ -14,6 +14,13 @@ public:
 private:
     QGridLayout* _layout = nullptr;
     QLineEdit* _inputForm = nullptr;
+    QGridLayout* _numbers  = nullptr;
+    QGridLayout* _operands = nullptr;
+
+    void setupMainWidget();
+    void setupNumbersWidget();
+    void setupOperandsWidget();
+    void setupInputForm();
 
     void setNumber(const QString& number);
     void setOperand(const QString& operand);

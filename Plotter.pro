@@ -14,6 +14,7 @@ SOURCES += \
     main.cpp \
     mainform.cpp \
     mainwindow.cpp \
+    parseequation.cpp \
     plotterform.cpp
 
 HEADERS += \
@@ -22,6 +23,7 @@ HEADERS += \
     inputfunctionform.h \
     mainform.h \
     mainwindow.h \
+    parseequation.h \
     plotterform.h
 
 # Default rules for deployment.

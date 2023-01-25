@@ -33,12 +33,6 @@ void InputFunctionForm::setupNumbersWidget()
     _numbers->addWidget(nineBtn,  3, 3);
     _numbers->addWidget(zeroBtn,  4, 2);
 
-    QPushButton* leftBtn  = CommonDesignes::designedButton("left");
-    QPushButton* rightBtn = CommonDesignes::designedButton("right");
-
-    _numbers->addWidget(leftBtn, 4, 1);
-    _numbers->addWidget(rightBtn, 4, 3);
-
     connect(oneBtn,   QPushButton::pressed, this, [&](){this->setNumber("1");});
     connect(twoBtn,   QPushButton::pressed, this, [&](){this->setNumber("2");});
     connect(threeBtn, QPushButton::pressed, this, [&](){this->setNumber("3");});
@@ -49,6 +43,15 @@ void InputFunctionForm::setupNumbersWidget()
     connect(eightBtn, QPushButton::pressed, this, [&](){this->setNumber("8");});
     connect(nineBtn,  QPushButton::pressed, this, [&](){this->setNumber("9");});
     connect(zeroBtn,  QPushButton::pressed, this, [&](){this->setNumber("0");});
+
+    QPushButton* xBtn  = CommonDesignes::designedButton("x");
+    QPushButton* yBtn = CommonDesignes::designedButton("y");
+
+    _numbers->addWidget(xBtn, 4, 1);
+    _numbers->addWidget(yBtn, 4, 3);
+
+    connect(xBtn, QPushButton::pressed, this, [&](){this->setNumber("x");});
+    connect(yBtn, QPushButton::pressed, this, [&](){this->setNumber("y");});
 }
 
 void InputFunctionForm::setupOperandsWidget()
@@ -107,7 +110,14 @@ void InputFunctionForm::setNumber(const QString &number)
 
 void InputFunctionForm::setOperand(const QString &operand)
 {
-    if (!_inputForm->cursorPosition())
+    QString equation = _inputForm->text();
+
+    if (equation.isEmpty())
+    {
+        return;
+    }
+
+    if (equation.last(1) == " ")
     {
         return;
     }
@@ -117,5 +127,17 @@ void InputFunctionForm::setOperand(const QString &operand)
 
 void InputFunctionForm::getStringFromInput()
 {
-    emit stringToValidCheck(_inputForm->text());
+    const QString equation = _inputForm->text();
+
+    if (equation.isEmpty())
+    {
+        return;
+    }
+
+    if (equation.last(1) == " ")
+    {
+        return;
+    }
+
+    emit stringToValidCheck(equation);
 }

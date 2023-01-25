@@ -1,8 +1,6 @@
 #include "inputfunctionform.h"
 #include "commondesignes.h"
 
-#include <QPushButton>
-
 InputFunctionForm::InputFunctionForm(QWidget *parent)
     : QWidget{parent}
 {
@@ -11,6 +9,8 @@ InputFunctionForm::InputFunctionForm(QWidget *parent)
 
 void InputFunctionForm::setupNumbersWidget()
 {
+    _numbers->setSpacing(5);
+
     QPushButton* oneBtn   = CommonDesignes::designedButton("1");
     QPushButton* twoBtn   = CommonDesignes::designedButton("2");
     QPushButton* threeBtn = CommonDesignes::designedButton("3");
@@ -39,20 +39,22 @@ void InputFunctionForm::setupNumbersWidget()
     _numbers->addWidget(leftBtn, 4, 1);
     _numbers->addWidget(rightBtn, 4, 3);
 
-    connect(oneBtn, QPushButton::pressed, this, [&](){this->setNumber("1");});
-    connect(twoBtn, QPushButton::pressed, this, [&](){this->setNumber("2");});
+    connect(oneBtn,   QPushButton::pressed, this, [&](){this->setNumber("1");});
+    connect(twoBtn,   QPushButton::pressed, this, [&](){this->setNumber("2");});
     connect(threeBtn, QPushButton::pressed, this, [&](){this->setNumber("3");});
-    connect(fourBtn, QPushButton::pressed, this, [&](){this->setNumber("4");});
-    connect(fiveBtn, QPushButton::pressed, this, [&](){this->setNumber("5");});
-    connect(sixBtn, QPushButton::pressed, this, [&](){this->setNumber("6");});
+    connect(fourBtn,  QPushButton::pressed, this, [&](){this->setNumber("4");});
+    connect(fiveBtn,  QPushButton::pressed, this, [&](){this->setNumber("5");});
+    connect(sixBtn,   QPushButton::pressed, this, [&](){this->setNumber("6");});
     connect(sevenBtn, QPushButton::pressed, this, [&](){this->setNumber("7");});
     connect(eightBtn, QPushButton::pressed, this, [&](){this->setNumber("8");});
-    connect(nineBtn, QPushButton::pressed, this, [&](){this->setNumber("9");});
-    connect(zeroBtn, QPushButton::pressed, this, [&](){this->setNumber("0");});
+    connect(nineBtn,  QPushButton::pressed, this, [&](){this->setNumber("9");});
+    connect(zeroBtn,  QPushButton::pressed, this, [&](){this->setNumber("0");});
 }
 
 void InputFunctionForm::setupOperandsWidget()
 {
+    _operands->setSpacing(5);
+
     QPushButton* plusBtn  = CommonDesignes::designedButton("+");
     QPushButton* minusBtn = CommonDesignes::designedButton("-");
     QPushButton* multBtn  = CommonDesignes::designedButton("*");
@@ -63,34 +65,39 @@ void InputFunctionForm::setupOperandsWidget()
     _operands->addWidget(multBtn,  3, 1);
     _operands->addWidget(divBtn,   4, 1);
 
-    connect(plusBtn, QPushButton::pressed, this, [&](){this->setOperand("+");});
+    connect(plusBtn,  QPushButton::pressed, this, [&](){this->setOperand("+");});
     connect(minusBtn, QPushButton::pressed, this, [&](){this->setOperand("-");});
-    connect(multBtn, QPushButton::pressed, this, [&](){this->setOperand("*");});
-    connect(divBtn, QPushButton::pressed, this, [&](){this->setOperand("/");});
+    connect(multBtn,  QPushButton::pressed, this, [&](){this->setOperand("*");});
+    connect(divBtn,   QPushButton::pressed, this, [&](){this->setOperand("/");});
 }
 
 void InputFunctionForm::setupInputForm()
 {
     _inputForm->setFocus();
-    qDebug() << _inputForm->cursorPosition();
 }
 
 void InputFunctionForm::setupMainWidget()
 {
-    _layout = new QGridLayout();
-    _numbers  = new QGridLayout();
-    _operands = new QGridLayout();
+    _layout    = new QGridLayout();
+    _numbers   = new QGridLayout();
+    _operands  = new QGridLayout();
     _inputForm = new QLineEdit();
+    QPushButton* confirmBtn = CommonDesignes::designedButton("Go");
 
     setupNumbersWidget();
     setupOperandsWidget();
     setupInputForm();
 
-    _layout->addWidget(_inputForm, 1, 1, 1, 2);
-    _layout->addLayout(_numbers, 2, 1);
-    _layout->addLayout(_operands, 2, 2);
+    _layout->addWidget(_inputForm, 1, 1, 1, 3);
+    _layout->addWidget(confirmBtn, 1, 4, 1, 1);
+    _layout->addLayout(_numbers,   2, 1, 1, 3, Qt::AlignLeft);
+    _layout->addLayout(_operands,  2, 4, 1, 1, Qt::AlignRight);
+
+    _layout->setContentsMargins(100, 100, 100, 100);
 
     this->setLayout(_layout);
+
+    connect(confirmBtn, QPushButton::pressed, this, InputFunctionForm::getStringFromInput);
 }
 
 void InputFunctionForm::setNumber(const QString &number)
@@ -106,4 +113,9 @@ void InputFunctionForm::setOperand(const QString &operand)
     }
 
     _inputForm->insert(" " + operand + " ");
+}
+
+void InputFunctionForm::getStringFromInput()
+{
+    emit stringToValidCheck(_inputForm->text());
 }

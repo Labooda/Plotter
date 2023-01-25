@@ -20,6 +20,9 @@ private:
 
 signals:
 
+private slots:
+    void sendStringToValidation(const QString& equation);
+
 };
 
 #endif // MAINFORM_H

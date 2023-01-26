@@ -8,6 +8,11 @@ ParseEquation::ParseEquation(QObject *parent)
 
 }
 
+BaseOperation *ParseEquation::getParsedFunc()
+{
+    return _parsedFunc;
+}
+
 BaseOperation *ParseEquation::stringToEquationParser(QString equation)
 {
     int lastOpPos = equation.lastIndexOf(QRegularExpression("[+-]"));
@@ -38,8 +43,7 @@ BaseOperation *ParseEquation::stringToEquationParser(QString equation)
 
 void ParseEquation::setEquationString(QString equation)
 {
-    BaseOperation* bo = stringToEquationParser(equation.remove(' '));
-    double result = bo->computeResult(10.0);
+    _parsedFunc = stringToEquationParser(equation.remove(' '));
 
-    qDebug() << result;
+    emit stringSuccesfullyParsed();
 }

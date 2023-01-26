@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     baseoperation.cpp \
     commondesignes.cpp \
+    discretefunction.cpp \
     inputfunctionform.cpp \
     main.cpp \
     mainform.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     baseoperation.h \
     commondesignes.h \
     constants.h \
+    discretefunction.h \
     inputfunctionform.h \
     mainform.h \
     mainwindow.h \

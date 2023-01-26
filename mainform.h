@@ -22,9 +22,7 @@ private:
     ParseEquation* _parser = nullptr;
     DiscreteFunction* _discreter = nullptr;
 
-    QMap<int, int>* _dots;
-
-signals:
+    QMap<double, double>* _dots;
 
 };
 

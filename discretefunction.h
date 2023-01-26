@@ -12,11 +12,11 @@ class DiscreteFunction : public QObject
 public:
     explicit DiscreteFunction(QObject *parent = nullptr);
 
-    QMap<int, int> *getDots();
+    QMap<double, double> *getDots();
     void arrayOfDots(BaseOperation *baseOp);
     BaseOperation *_baseOp = nullptr;
 
-    QMap<int, int> *_dots = nullptr;
+    QMap<double, double> *_dots = nullptr;
 
 private:
 

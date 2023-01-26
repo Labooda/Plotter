@@ -33,6 +33,7 @@ MainForm::MainForm(QWidget *parent)
         {
             qDebug() << key << " " << value;
         }
-    });
 
+        this->_plotterForm->setDots(this->_dots);
+    });
 }

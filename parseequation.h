@@ -1,6 +1,8 @@
 #ifndef PARSEEQUATION_H
 #define PARSEEQUATION_H
 
+#include "baseoperation.h"
+
 #include <QObject>
 
 class ParseEquation : public QObject
@@ -10,7 +12,7 @@ public:
     explicit ParseEquation(QObject *parent = nullptr);
 
 private:
-    int stringToEquationParser(QString equation);
+    BaseOperation *stringToEquationParser(QString equation);
 
 signals:
 

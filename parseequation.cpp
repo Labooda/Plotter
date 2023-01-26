@@ -8,49 +8,38 @@ ParseEquation::ParseEquation(QObject *parent)
 
 }
 
-int ParseEquation::stringToEquationParser(QString equation)
+BaseOperation *ParseEquation::stringToEquationParser(QString equation)
 {
-    int lastPlusMinusPos = equation.lastIndexOf(QRegularExpression("[+-]"));
+    int lastOpPos = equation.lastIndexOf(QRegularExpression("[+-]"));
 
-    QString leftOperand = equation.sliced(0, lastPlusMinusPos);
-    QString oprtr = equation[lastPlusMinusPos];
-    QString rightOperand = equation.sliced(lastPlusMinusPos + 1);
-
-    int leftResult;
-    int rightResult;
-
-    if (leftOperand.contains("+") || leftOperand.contains("-"))
+    if (lastOpPos == -1)
     {
-        leftResult = stringToEquationParser(leftOperand);
-    }
-    else
-    {
-        leftResult = leftOperand.toInt();
+        lastOpPos = equation.lastIndexOf(QRegularExpression("[*/]"));
     }
 
-    if (rightOperand.contains("+") || rightOperand.contains("-"))
+    if (lastOpPos == -1)
     {
-        rightResult = stringToEquationParser(rightOperand);
-    }
-    else
-    {
-        rightResult = rightOperand.toInt();
-    }
-
-    if (oprtr == "-")
-    {
-        return leftResult - rightResult;
+        if (equation == "x")
+        {
+            return new BaseOperation(new QPair<QString, QString>("variable", equation));
+        }
+        else
+        {
+            return new BaseOperation(new QPair<QString, QString>("number", equation));
+        }
     }
 
-    if (oprtr == "+")
-    {
-        return leftResult + rightResult;
-    }
+    QString leftOperand = equation.sliced(0, lastOpPos);
+    QString oprtr = equation[lastOpPos];
+    QString rightOperand = equation.sliced(lastOpPos + 1);
 
-    return 0;
+    return new BaseOperation(stringToEquationParser(leftOperand), oprtr, stringToEquationParser(rightOperand));
 }
 
 void ParseEquation::setEquationString(QString equation)
 {
-    qDebug() << stringToEquationParser(equation.remove(' '));
+    BaseOperation* bo = stringToEquationParser(equation.remove(' '));
+    double result = bo->computeResult(10.0);
+
+    qDebug() << result;
 }

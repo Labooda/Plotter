@@ -9,19 +9,23 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    baseoperation.cpp \
     commondesignes.cpp \
     inputfunctionform.cpp \
     main.cpp \
     mainform.cpp \
     mainwindow.cpp \
+    parseequation.cpp \
     plotterform.cpp
 
 HEADERS += \
+    baseoperation.h \
     commondesignes.h \
     constants.h \
     inputfunctionform.h \
     mainform.h \
     mainwindow.h \
+    parseequation.h \
     plotterform.h
 
 # Default rules for deployment.

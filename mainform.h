@@ -3,6 +3,7 @@
 
 #include "inputfunctionform.h"
 #include "plotterform.h"
+#include "parseequation.h"
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -17,11 +18,9 @@ private:
     InputFunctionForm *_inputForm = nullptr;
     PlotterForm *_plotterForm = nullptr;
     QHBoxLayout *_layout = nullptr;
+    ParseEquation* _parser = nullptr;
 
 signals:
-
-private slots:
-    void sendStringToValidation(const QString& equation);
 
 };
 

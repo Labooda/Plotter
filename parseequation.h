@@ -11,10 +11,14 @@ class ParseEquation : public QObject
 public:
     explicit ParseEquation(QObject *parent = nullptr);
 
+    BaseOperation* getParsedFunc();
+
 private:
     BaseOperation *stringToEquationParser(QString equation);
+    BaseOperation* _parsedFunc = nullptr;
 
 signals:
+    void stringSuccesfullyParsed();
 
 public slots:
     void setEquationString(const QString equation);

@@ -4,6 +4,7 @@
 #include "inputfunctionform.h"
 #include "plotterform.h"
 #include "parseequation.h"
+#include "discretefunction.h"
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -19,6 +20,9 @@ private:
     PlotterForm *_plotterForm = nullptr;
     QHBoxLayout *_layout = nullptr;
     ParseEquation* _parser = nullptr;
+    DiscreteFunction* _discreter = nullptr;
+
+    QMap<int, int>* _dots;
 
 signals:
 

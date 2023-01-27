@@ -28,12 +28,6 @@ MainForm::MainForm(QWidget *parent)
     connect(_discreter, &DiscreteFunction::dotsCompleted, this, [this]()
     {
         this->_dots = this->_discreter->getDots();
-
-//        for (auto [key, value] : _dots->asKeyValueRange())
-//        {
-//            qDebug() << key << " " << value;
-//        }
-
         this->_plotterForm->setDots(this->_dots);
     });
 }

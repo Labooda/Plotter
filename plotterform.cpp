@@ -16,14 +16,16 @@ void PlotterForm::setDots(QMap<double, double> *dots)
     }
     _dots = dots;
     update();
+    qDebug() << "setDots:Called";
 }
 
 void PlotterForm::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
-    painter.setPen(Qt::black);
+    painter.setPen(QPen(Qt::black, 1));
     this->drawAxes(painter);
+    painter.setPen(QPen(Qt::cyan, 3));
 
     if (_dots == nullptr)
     {
@@ -38,22 +40,26 @@ void PlotterForm::paintEvent(QPaintEvent *event)
     {
         points[j].setX(setXtoZero(i.key()));
         points[j].setY(setYtoZero(i.value()));
+        //qDebug() << "QPoints: " << points[j].x() - this->width() / 2 << " " << this->height() / 2 - points[j].y();
     }
 
     painter.drawPolyline(points, length);
+
     delete[] points;
 
-    painter.setPen(Qt::red);
+    painter.setPen(QPen(Qt::red, 1));
 
     for (auto [key, value] : _dots->asKeyValueRange())
     {
         painter.drawPoint(setXtoZero(key), setYtoZero(value));
     }
+
+    //qDebug() << "paintEvent:Called";
 }
 
 void PlotterForm::drawAxes(QPainter &painter)
 {
-    qDebug() << this->width() << " " << this->height();
+    //qDebug() << this->width() << " " << this->height();
     painter.drawLine(this->width() / 2, 0, this->width() / 2, this->height());
     painter.drawLine(0, this->height() / 2, this->width(), this->height() / 2);
 }

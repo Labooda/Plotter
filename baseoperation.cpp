@@ -49,7 +49,7 @@ double BaseOperation::computeResult(double x)
         }
         if (_oprtr == "/")
         {
-            return firstRes / secondRes;
+            return secondRes != 0 ? firstRes / secondRes : INT_MAX;
         }
     }
 

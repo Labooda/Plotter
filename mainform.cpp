@@ -29,10 +29,10 @@ MainForm::MainForm(QWidget *parent)
     {
         this->_dots = this->_discreter->getDots();
 
-        for (auto [key, value] : _dots->asKeyValueRange())
-        {
-            qDebug() << key << " " << value;
-        }
+//        for (auto [key, value] : _dots->asKeyValueRange())
+//        {
+//            qDebug() << key << " " << value;
+//        }
 
         this->_plotterForm->setDots(this->_dots);
     });

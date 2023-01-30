@@ -9,19 +9,9 @@ DiscreteFunction::DiscreteFunction(QObject *parent)
 
 void DiscreteFunction::arrayOfDots(BaseOperation *baseOp)
 {
-    if (baseOp != nullptr)
-    {
-        _baseOp = baseOp;
-    }
-
-    if (_baseOp == nullptr)
-    {
-        return;
-    }
-
     QMap<double, double> *dots = new QMap<double, double>();
 
-    for (double i = _leftBord; i < _rightBord; i++)
+    for (double i = _leftBord; i < _rightBord; i += (_rightBord - _leftBord) / 100)
     {
         dots->insert(i, _baseOp->computeResult(i));
     }
@@ -29,10 +19,12 @@ void DiscreteFunction::arrayOfDots(BaseOperation *baseOp)
     emit dotsCompleted(dots);
 }
 
-void DiscreteFunction::setBrdrs(double leftBord, double rightBord)
+void DiscreteFunction::updateParams(FuncParams *params)
 {
-    _leftBord = leftBord;
-    _rightBord = rightBord;
+    _baseOp = params->getSolution();
+    _leftBord = params->getLeftBord();
+    _rightBord = params->getRightBord();
+    qDebug() << "DiscreteFunction::updateParams::ended" << _leftBord << _rightBord;
 
     arrayOfDots();
 }

@@ -1,8 +1,9 @@
 #include "inputfunctionform.h"
 #include "commondesignes.h"
 
-InputFunctionForm::InputFunctionForm(QWidget *parent)
-    : QWidget{parent}
+InputFunctionForm::InputFunctionForm(FuncParams *params, QWidget *parent)
+    : QWidget{parent},
+      _params(params)
 {
     setupMainWidget();
 }
@@ -138,6 +139,7 @@ void InputFunctionForm::getStringFromInput()
     {
         return;
     }
+        _params->setStrFunc(equation);
 
-    emit stringToValidCheck(equation);
+    emit updateParams(_params);
 }

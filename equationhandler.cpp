@@ -6,25 +6,17 @@ EquationHandler::EquationHandler(QObject *parent)
     _parser = new ParseEquation();
     _discretor = new DiscreteFunction();
 
-    connect(this, &EquationHandler::sendToParser, _parser, &ParseEquation::setEquationString);
-    connect(_parser, &ParseEquation::stringSuccesfullyParsed, _discretor, &DiscreteFunction::arrayOfDots);
+    connect(this, &EquationHandler::updateParams, _parser, &ParseEquation::solveStrFunc);
+    connect(_parser, &ParseEquation::updateParams, _discretor, &DiscreteFunction::updateParams);
     connect(_discretor, &DiscreteFunction::dotsCompleted, this, &EquationHandler::getDotsFromDiscretor);
-    connect(this, &EquationHandler::sendBordersToDisc, _discretor, &DiscreteFunction::setBrdrs);
-    connect(this, &EquationHandler::plotterMoved, _discretor, &DiscreteFunction::setBrdrs);
 }
 
-void EquationHandler::getStringFromInput(const QString &equation, double leftBord, double rightBord)
+void EquationHandler::updateParamsHandle(FuncParams *params)
 {
-    emit sendBordersToDisc(leftBord, rightBord);
-    emit sendToParser(equation);
+    emit updateParams(params);
 }
 
 void EquationHandler::getDotsFromDiscretor(QMap<double, double> *dots)
 {
     emit dotsToPlotter(dots);
-}
-
-void EquationHandler::plotterMovedHandler(double leftBord, double rightBord)
-{
-    emit plotterMoved(leftBord, rightBord);
 }

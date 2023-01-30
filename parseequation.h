@@ -2,6 +2,7 @@
 #define PARSEEQUATION_H
 
 #include "baseoperation.h"
+#include "funcparams.h"
 
 #include <QObject>
 
@@ -18,10 +19,10 @@ private:
     BaseOperation* _parsedFunc = nullptr;
 
 signals:
-    void stringSuccesfullyParsed(BaseOperation* parsedFunc);
+    void updateParams(FuncParams *params);
 
 public slots:
-    void setEquationString(const QString equation);
+    void solveStrFunc(FuncParams *params);
 
 };
 

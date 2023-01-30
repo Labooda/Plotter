@@ -13,6 +13,7 @@ SOURCES += \
     commondesignes.cpp \
     discretefunction.cpp \
     equationhandler.cpp \
+    funcparams.cpp \
     inputfunctionform.cpp \
     main.cpp \
     mainform.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     constants.h \
     discretefunction.h \
     equationhandler.h \
+    funcparams.h \
     inputfunctionform.h \
     mainform.h \
     mainwindow.h \

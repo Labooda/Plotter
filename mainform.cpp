@@ -5,40 +5,27 @@
 MainForm::MainForm(QWidget *parent)
     : QWidget{parent}
 {
+    _params = new FuncParams();
     _layout = new QHBoxLayout();
      this->setLayout(_layout);
 
-    _inputForm = new InputFunctionForm();
-    _plotterForm = new PlotterForm();
-
-    setBorders(-_plotterForm->width() / 2, _plotterForm->width() / 2);
+    _inputForm = new InputFunctionForm(_params);
+    _plotterForm = new PlotterForm(_params);
 
     _layout->addWidget(_inputForm, 1);
     _layout->addWidget(_plotterForm, 1);
 
-    connect(_inputForm, &InputFunctionForm::stringToValidCheck, this, &MainForm::stringToHandler);
+    connect(_inputForm, &InputFunctionForm::updateParams, this, &MainForm::updateParamsHandle);
     connect(this, &MainForm::dotsToPlotter, _plotterForm, &PlotterForm::setDots);
-    connect(_plotterForm, &PlotterForm::sendBorders, this, &MainForm::setBorders);
-    connect(_plotterForm, &PlotterForm::plotterMoved, this, &MainForm::plotterMovedHandler);
+    connect(_plotterForm, &PlotterForm::updateParams, this, &MainForm::updateParamsHandle);
 }
 
-void MainForm::setBorders(double leftBord, double rightBord)
+void MainForm::updateParamsHandle(FuncParams *params)
 {
-    _leftBord = leftBord;
-    _rightBord = rightBord;
-}
-
-void MainForm::stringToHandler(const QString &equation)
-{
-    emit stringFromInput(equation, _leftBord, _rightBord);
+    emit updateParams(params);
 }
 
 void MainForm::dotsFromHandler(QMap<double, double> *dots)
 {
     emit dotsToPlotter(dots);
-}
-
-void MainForm::plotterMovedHandler(double leftBord, double rightBord)
-{
-    emit plotterMoved(leftBord, rightBord);
 }

@@ -2,6 +2,7 @@
 #define DISCRETEFUNCTION_H
 
 #include "baseoperation.h"
+#include "funcparams.h"
 
 #include <QObject>
 #include <QMap>
@@ -19,7 +20,7 @@ private:
 
 public slots:
     void arrayOfDots(BaseOperation *baseOp = nullptr);
-    void setBrdrs(double leftBord, double rightBord);
+    void updateParams(FuncParams *params);
 
 signals:
     void dotsCompleted(QMap<double, double> *_dots);

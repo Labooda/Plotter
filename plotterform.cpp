@@ -2,8 +2,9 @@
 
 #include <QPointF>
 
-PlotterForm::PlotterForm(QWidget *parent)
-    : QFrame{parent}
+PlotterForm::PlotterForm(FuncParams *params, QWidget *parent)
+    : QFrame{parent},
+      _params(params)
 {
     this->setStyleSheet("border: 3px solid black;");
 }
@@ -45,7 +46,7 @@ void PlotterForm::paintEvent(QPaintEvent *event)
 
     delete[] points;
 
-    painter.setPen(QPen(Qt::red, 1));
+    painter.setPen(QPen(Qt::red, 2));
 
     for (auto [key, value] : _dots->asKeyValueRange())
     {
@@ -67,12 +68,19 @@ void PlotterForm::mouseMoveEvent(QMouseEvent *event)
     {
         return;
     }
+
     QPoint currentPos = event->pos();
     _dx = currentPos.x() - _dragStartPosition.x();
     _dy = currentPos.y() - _dragStartPosition.y();
 
-    emit plotterMoved(-this->width() / 2 - _xAxeZero - _dx, this->width() / 2 - _xAxeZero - _dx);
+    double left = (-this->width() / 2 - _xAxeZero - _dx)/ _scale;
+    double right = (this->width() / 2 - _xAxeZero - _dx)/ _scale;
+
+    _params->setLeftBord(left);
+    _params->setRightBord(right);
+    emit updateParams(_params);
     update();
+    qDebug() << "move::ended" << left << right;
 }
 
 void PlotterForm::mouseReleaseEvent(QMouseEvent *event)
@@ -84,6 +92,30 @@ void PlotterForm::mouseReleaseEvent(QMouseEvent *event)
 
     _xAxeZero += _dx;
     _yAxeZero += _dy;
+    _dx = 0;
+    _dy = 0;
+}
+
+void PlotterForm::wheelEvent(QWheelEvent *event)
+{
+    int wheelStep = event->angleDelta().y();
+
+    if (wheelStep >= 120)
+    {
+        _scale *= 2;
+    }
+    else if (wheelStep <= 120)
+    {
+        _scale /= 2;
+    }
+
+    double left = (-this->width() / 2 - _xAxeZero - _dx)/ _scale;
+    double right = (this->width() / 2 - _xAxeZero - _dx)/ _scale;
+
+    _params->setLeftBord(left);
+    _params->setRightBord(right);
+    emit updateParams(_params);
+    update();
 }
 
 void PlotterForm::drawAxes(QPainter &painter)
@@ -93,10 +125,10 @@ void PlotterForm::drawAxes(QPainter &painter)
     painter.save();
     painter.setPen(QPen(Qt::green, 1));
 
-    double gridCol = 50/*this->width() / 10*/;
-    double gridRow = 50/*this->height() / 10*/;
+    double gridCol = _scale/*this->width() / 10*/;
+    double gridRow = _scale/*this->height() / 10*/;
     double startGridX = (int)x % (int)gridCol;
-    double startGridY = (int)y % (int)gridRow;;
+    double startGridY = (int)y % (int)gridRow;
 
     while (startGridX <= this->width() || startGridY <= this->height())
     {
@@ -112,12 +144,12 @@ void PlotterForm::drawAxes(QPainter &painter)
 
 double PlotterForm::setXtoZero(double x)
 {
-    return this->width() / 2 + _xAxeZero + _dx + x;
+    return this->width() / 2 + _xAxeZero + _dx + x * _scale;
 }
 
 double PlotterForm::setYtoZero(double y)
 {
-    return this->height() / 2 + _yAxeZero + _dy - y;
+    return this->height() / 2 + _yAxeZero + _dy - y * _scale;
 }
 
 void PlotterForm::getBorders(double leftBord, double rightBord)

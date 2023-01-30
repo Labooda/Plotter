@@ -3,6 +3,7 @@
 
 #include "inputfunctionform.h"
 #include "plotterform.h"
+#include "funcparams.h"
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -14,6 +15,7 @@ public:
     explicit MainForm(QWidget *parent = nullptr);
 
 private:
+    FuncParams *_params = nullptr;
     InputFunctionForm *_inputForm = nullptr;
     PlotterForm *_plotterForm = nullptr;
     QHBoxLayout *_layout = nullptr;
@@ -21,17 +23,14 @@ private:
     double _rightBord = 0;
 
 private slots:
-    void stringToHandler(const QString &equation);
-    void setBorders(double leftBord, double rightBord);
+    void updateParamsHandle(FuncParams *params);
 
 public slots:
     void dotsFromHandler(QMap<double, double> *dots);
-    void plotterMovedHandler(double leftBord, double rightBord);
 
 signals:
     void dotsToPlotter(QMap<double, double> *dots);
-    void stringFromInput(const QString &equation, double leftBord, double rightBord);
-    void plotterMoved(double leftBord, double rightBord);
+    void updateParams(FuncParams *params);
 };
 
 #endif // MAINFORM_H

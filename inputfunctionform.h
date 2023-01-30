@@ -1,6 +1,8 @@
 #ifndef INPUTFUNCTIONFORM_H
 #define INPUTFUNCTIONFORM_H
 
+#include "funcparams.h"
+
 #include <QWidget>
 #include <QGridLayout>
 #include <QLineEdit>
@@ -10,9 +12,10 @@ class InputFunctionForm : public QWidget
 {
     Q_OBJECT
 public:
-    explicit InputFunctionForm(QWidget *parent = nullptr);
+    explicit InputFunctionForm(FuncParams *params, QWidget *parent = nullptr);
 
 private:
+    FuncParams *_params = nullptr;
     QGridLayout* _layout = nullptr;
     QLineEdit* _inputForm = nullptr;
     QGridLayout* _numbers  = nullptr;
@@ -27,7 +30,7 @@ private:
     void setOperand(const QString& operand);
 
 signals:
-    void stringToValidCheck(const QString& equation);
+    void updateParams(FuncParams *params);
 
 private slots:
     void getStringFromInput();

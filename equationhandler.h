@@ -3,6 +3,7 @@
 
 #include "parseequation.h"
 #include "discretefunction.h"
+#include "funcparams.h"
 
 #include <QObject>
 
@@ -17,14 +18,11 @@ private:
     DiscreteFunction* _discretor = nullptr;
 
 signals:
-    void sendToParser(const QString& equation);
     void dotsToPlotter(QMap<double, double> *dots);
-    void sendBordersToDisc(double leftBord, double rightBord);
-    void plotterMoved(double leftBord, double rightBord);
+    void updateParams(FuncParams *params);
 
 public slots:
-    void getStringFromInput(const QString &equation, double leftBord, double rightBord);
-    void plotterMovedHandler(double leftBord, double rightBord);
+    void updateParamsHandle(FuncParams *params);
 
 private slots:
     void getDotsFromDiscretor(QMap<double, double> *dots);

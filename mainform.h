@@ -3,8 +3,6 @@
 
 #include "inputfunctionform.h"
 #include "plotterform.h"
-#include "parseequation.h"
-#include "discretefunction.h"
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -19,11 +17,21 @@ private:
     InputFunctionForm *_inputForm = nullptr;
     PlotterForm *_plotterForm = nullptr;
     QHBoxLayout *_layout = nullptr;
-    ParseEquation* _parser = nullptr;
-    DiscreteFunction* _discreter = nullptr;
+    double _leftBord = 0;
+    double _rightBord = 0;
 
-    QMap<double, double>* _dots;
+private slots:
+    void stringToHandler(const QString &equation);
+    void setBorders(double leftBord, double rightBord);
 
+public slots:
+    void dotsFromHandler(QMap<double, double> *dots);
+    void plotterMovedHandler(double leftBord, double rightBord);
+
+signals:
+    void dotsToPlotter(QMap<double, double> *dots);
+    void stringFromInput(const QString &equation, double leftBord, double rightBord);
+    void plotterMoved(double leftBord, double rightBord);
 };
 
 #endif // MAINFORM_H

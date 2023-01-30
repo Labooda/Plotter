@@ -45,5 +45,5 @@ void ParseEquation::setEquationString(QString equation)
 {
     _parsedFunc = stringToEquationParser(equation.remove(' '));
 
-    emit stringSuccesfullyParsed();
+    emit stringSuccesfullyParsed(_parsedFunc);
 }

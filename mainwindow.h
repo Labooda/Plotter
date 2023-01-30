@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include "mainform.h"
+#include "equationhandler.h"
 
 #include <QMainWindow>
-#include <QVBoxLayout>
 
 class MainWindow : public QMainWindow
 {
@@ -15,7 +15,7 @@ public:
     ~MainWindow();
 
 private:
-    MainForm* _mainForm = nullptr;
-    QLayout* _layout = nullptr;
+    MainForm *_mainForm = nullptr;
+    EquationHandler *_handler = nullptr;
 };
 #endif // MAINWINDOW_H

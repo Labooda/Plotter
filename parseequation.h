@@ -18,7 +18,7 @@ private:
     BaseOperation* _parsedFunc = nullptr;
 
 signals:
-    void stringSuccesfullyParsed();
+    void stringSuccesfullyParsed(BaseOperation* parsedFunc);
 
 public slots:
     void setEquationString(const QString equation);

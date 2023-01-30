@@ -1,23 +1,38 @@
 #include "discretefunction.h"
 
+#include <QDebug>
+
 DiscreteFunction::DiscreteFunction(QObject *parent)
     : QObject{parent}
 {
 }
 
-QMap<double, double> *DiscreteFunction::getDots()
-{
-    return _dots;
-}
-
 void DiscreteFunction::arrayOfDots(BaseOperation *baseOp)
 {
-    _dots = new QMap<double, double>();
-    _baseOp = baseOp;
-    for (double i = 0; i < 100; i++)
+    if (baseOp != nullptr)
     {
-        _dots->insert(i, _baseOp->computeResult(i));
+        _baseOp = baseOp;
     }
 
-    emit dotsCompleted();
+    if (_baseOp == nullptr)
+    {
+        return;
+    }
+
+    QMap<double, double> *dots = new QMap<double, double>();
+
+    for (double i = _leftBord; i < _rightBord; i++)
+    {
+        dots->insert(i, _baseOp->computeResult(i));
+    }
+
+    emit dotsCompleted(dots);
+}
+
+void DiscreteFunction::setBrdrs(double leftBord, double rightBord)
+{
+    _leftBord = leftBord;
+    _rightBord = rightBord;
+
+    arrayOfDots();
 }

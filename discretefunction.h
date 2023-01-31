@@ -16,14 +16,18 @@ public:
 private:
     double _leftBord = -320;
     double _rightBord = 320;
+    double _topBord = 500;
+    double _bottomBord = -500;
     BaseOperation *_baseOp = nullptr;
+
+    void cleanDots(QMap<double, double> *dots);
 
 public slots:
     void arrayOfDots(BaseOperation *baseOp = nullptr);
     void updateParams(FuncParams *params);
 
 signals:
-    void dotsCompleted(QMap<double, double> *_dots);
+    void dotsCompleted(QMap<double, double> *dots);
 };
 
 #endif // DISCRETEFUNCTION_H

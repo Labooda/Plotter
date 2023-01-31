@@ -1,6 +1,7 @@
 #include "plotterform.h"
 
 #include <QPointF>
+#include <QFontMetrics>
 
 PlotterForm::PlotterForm(FuncParams *params, QWidget *parent)
     : QFrame{parent},
@@ -23,12 +24,14 @@ void PlotterForm::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QPainter painter(this);
-    painter.setPen(QPen(Qt::black, 2));
-    this->drawAxes(painter);
+    painter.fillRect(0, 0, this->width(), this->height(), Qt::white);
+
     painter.setPen(QPen(Qt::cyan, 3));
 
     if (_dots == nullptr)
     {
+        painter.setPen(QPen(Qt::black, 2));
+        drawAxes(painter);
         return;
     }
 
@@ -52,6 +55,9 @@ void PlotterForm::paintEvent(QPaintEvent *event)
     {
         painter.drawPoint(setXtoZero(key), setYtoZero(value));
     }
+
+    painter.setPen(QPen(Qt::black, 3));
+    drawAxes(painter);
 }
 
 void PlotterForm::mousePressEvent(QMouseEvent *event)
@@ -73,14 +79,9 @@ void PlotterForm::mouseMoveEvent(QMouseEvent *event)
     _dx = currentPos.x() - _dragStartPosition.x();
     _dy = currentPos.y() - _dragStartPosition.y();
 
-    double left = (-this->width() / 2 - _xAxeZero - _dx)/ _scale;
-    double right = (this->width() / 2 - _xAxeZero - _dx)/ _scale;
-
-    _params->setLeftBord(left);
-    _params->setRightBord(right);
+    setBorders();
     emit updateParams(_params);
     update();
-    qDebug() << "move::ended" << left << right;
 }
 
 void PlotterForm::mouseReleaseEvent(QMouseEvent *event)
@@ -92,6 +93,7 @@ void PlotterForm::mouseReleaseEvent(QMouseEvent *event)
 
     _xAxeZero += _dx;
     _yAxeZero += _dy;
+    qDebug() << _xAxeZero << _yAxeZero;
     _dx = 0;
     _dy = 0;
 }
@@ -100,46 +102,72 @@ void PlotterForm::wheelEvent(QWheelEvent *event)
 {
     int wheelStep = event->angleDelta().y();
 
-    if (wheelStep >= 120)
+    if (wheelStep > 0 && ((_scale * 1.5) < std::numeric_limits<double>::max()))
     {
-        _scale *= 2;
-    }
-    else if (wheelStep <= 120)
-    {
-        _scale /= 2;
+        _scale *= 1.5;
+        _xAxeZero = 1.5 * _xAxeZero - 0.5 * (event->position().x() - this->width() / 2);
+        _yAxeZero = 1.5 * _yAxeZero - 0.5 * (event->position().y() - this->height() / 2);
     }
 
-    double left = (-this->width() / 2 - _xAxeZero - _dx)/ _scale;
-    double right = (this->width() / 2 - _xAxeZero - _dx)/ _scale;
+    if (wheelStep < 0 && ((_scale / 1.5) > 1))
+    {
+        _scale /= 1.5;
+        _xAxeZero = _xAxeZero / 1.5 + (1.0 / 3.0) * (event->position().x() - this->width() / 2);
+        _yAxeZero = _yAxeZero / 1.5 + (1.0 / 3.0) * (event->position().y() - this->height() / 2);
+    }
 
-    _params->setLeftBord(left);
-    _params->setRightBord(right);
+    setBorders();
     emit updateParams(_params);
     update();
 }
 
 void PlotterForm::drawAxes(QPainter &painter)
 {
+    QFont font("Consolas", 16, 100, true);
+    painter.setFont(font);
+
     double x = this->width() / 2 + _xAxeZero + _dx;
     double y = this->height() / 2 + _yAxeZero + _dy;
-    painter.save();
+
     painter.setPen(QPen(Qt::green, 1));
 
-    double gridCol = _scale/*this->width() / 10*/;
-    double gridRow = _scale/*this->height() / 10*/;
+    double gridCol = 100;
+    double gridRow = 100;
     double startGridX = (int)x % (int)gridCol;
     double startGridY = (int)y % (int)gridRow;
 
     while (startGridX <= this->width() || startGridY <= this->height())
     {
-        painter.drawLine(startGridX, 0, startGridX, this->height());
-        painter.drawLine(0, startGridY, this->width(), startGridY);
+        if (abs(startGridX - x) <= 1)
+        {
+            painter.setPen(QPen(Qt::black, 2));
+            painter.drawLine(x, 0, x, this->height());
+            painter.setPen(QPen(Qt::green, 1));
+        }
+        else
+        {
+            painter.drawLine(startGridX, 0, startGridX, this->height());
+        }
         startGridX += gridCol;
+
+        QFontMetrics fm(font);
+        int pixelsW{fm.horizontalAdvance("100")};
+        int pixelsH{fm.height()};
+        painter.fillRect(200, 200, pixelsW, pixelsH, Qt::white);
+        painter.drawText(200, 200, pixelsW, pixelsH, Qt::AlignCenter, "100");
+
+        if (abs(startGridY - y) <= 1)
+        {
+            painter.setPen(QPen(Qt::black, 2));
+            painter.drawLine(0, y, this->width(), y);
+            painter.setPen(QPen(Qt::green, 1));
+        }
+        else
+        {
+            painter.drawLine(0, startGridY, this->width(), startGridY);
+        }
         startGridY += gridRow;
     }
-    painter.restore();
-    painter.drawLine(x, 0, x, this->height());
-    painter.drawLine(0, y, this->width(), y);
 }
 
 double PlotterForm::setXtoZero(double x)
@@ -150,6 +178,19 @@ double PlotterForm::setXtoZero(double x)
 double PlotterForm::setYtoZero(double y)
 {
     return this->height() / 2 + _yAxeZero + _dy - y * _scale;
+}
+
+void PlotterForm::setBorders()
+{
+    double left = (-this->width() / 2 - _xAxeZero - _dx)/ _scale;
+    double right = (this->width() / 2 - _xAxeZero - _dx)/ _scale;
+    double top = (this->height() / 2 + _yAxeZero + _dy)/ _scale;
+    double bottom = (-this->height() / 2 + _yAxeZero + _dy)/ _scale;
+
+    _params->setLeftBord(left);
+    _params->setRightBord(right);
+    _params->setTopBord(top);
+    _params->setBottomBord(bottom);
 }
 
 void PlotterForm::getBorders(double leftBord, double rightBord)

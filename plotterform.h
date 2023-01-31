@@ -22,6 +22,7 @@ private:
     QPainter* _painter = nullptr;
     QMap<double, double> *_dots = nullptr;
     QPoint _dragStartPosition;
+    QFont _font;
     double _dx = 0;
     double _dy = 0;
     double _xAxeZero = 0;
@@ -38,6 +39,7 @@ private:
 
     double setXtoZero(double x);
     double setYtoZero(double y);
+    void setBorders();
 
 public slots:
     void setDots(QMap<double, double> *dots);

@@ -38,9 +38,16 @@ BaseOperation *ParseEquation::stringToEquationParser(QString equation)
 
 void ParseEquation::solveStrFunc(FuncParams *params)
 {
+    QString func = params->getStrFunc().remove(' ');
+
+    if (func.isEmpty())
+    {
+        return;
+    }
+
     if (!params->getSolved())
     {
-        params->setSolution(stringToEquationParser(params->getStrFunc().remove(' ')));
+        params->setSolution(stringToEquationParser(func));
     }
 
     emit updateParams(params);

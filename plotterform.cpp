@@ -49,13 +49,6 @@ void PlotterForm::paintEvent(QPaintEvent *event)
 
     delete[] points;
 
-    painter.setPen(QPen(Qt::red, 2));
-
-    for (auto [key, value] : _dots->asKeyValueRange())
-    {
-        painter.drawPoint(setXtoZero(key), setYtoZero(value));
-    }
-
     painter.setPen(QPen(Qt::black, 3));
     drawAxes(painter);
 }
@@ -93,7 +86,6 @@ void PlotterForm::mouseReleaseEvent(QMouseEvent *event)
 
     _xAxeZero += _dx;
     _yAxeZero += _dy;
-    qDebug() << _xAxeZero << _yAxeZero;
     _dx = 0;
     _dy = 0;
 }
@@ -102,18 +94,18 @@ void PlotterForm::wheelEvent(QWheelEvent *event)
 {
     int wheelStep = event->angleDelta().y();
 
-    if (wheelStep > 0 && ((_scale * 1.5) < std::numeric_limits<double>::max()))
+    if (wheelStep > 0 && ((_scale * 2) < std::numeric_limits<double>::max()))
     {
-        _scale *= 1.5;
-        _xAxeZero = 1.5 * _xAxeZero - 0.5 * (event->position().x() - this->width() / 2);
-        _yAxeZero = 1.5 * _yAxeZero - 0.5 * (event->position().y() - this->height() / 2);
+        _scale *= 2;
+        _xAxeZero = 2 * _xAxeZero - (event->position().x() - this->width() / 2);
+        _yAxeZero = 2 * _yAxeZero - (event->position().y() - this->height() / 2);
     }
 
-    if (wheelStep < 0 && ((_scale / 1.5) > 1))
+    if (wheelStep < 0 && ((_scale / 2) > 1))
     {
-        _scale /= 1.5;
-        _xAxeZero = _xAxeZero / 1.5 + (1.0 / 3.0) * (event->position().x() - this->width() / 2);
-        _yAxeZero = _yAxeZero / 1.5 + (1.0 / 3.0) * (event->position().y() - this->height() / 2);
+        _scale /= 2;
+        _xAxeZero = _xAxeZero / 2 + 0.5 * (event->position().x() - this->width() / 2);
+        _yAxeZero = _yAxeZero / 2 + 0.5 * (event->position().y() - this->height() / 2);
     }
 
     setBorders();
@@ -123,8 +115,12 @@ void PlotterForm::wheelEvent(QWheelEvent *event)
 
 void PlotterForm::drawAxes(QPainter &painter)
 {
-    QFont font("Consolas", 16, 100, true);
+    QFont font("Consolas", 10, 100, true);
+    QFontMetrics fm(font);
     painter.setFont(font);
+    int pixelsW;
+    int pixelsH;
+    QString number;
 
     double x = this->width() / 2 + _xAxeZero + _dx;
     double y = this->height() / 2 + _yAxeZero + _dy;
@@ -133,8 +129,8 @@ void PlotterForm::drawAxes(QPainter &painter)
 
     double gridCol = 100;
     double gridRow = 100;
-    double startGridX = (int)x % (int)gridCol;
-    double startGridY = (int)y % (int)gridRow;
+    double startGridX = (int)x % (int)gridCol - gridCol;
+    double startGridY = (int)y % (int)gridRow - gridRow;
 
     while (startGridX <= this->width() || startGridY <= this->height())
     {
@@ -148,13 +144,17 @@ void PlotterForm::drawAxes(QPainter &painter)
         {
             painter.drawLine(startGridX, 0, startGridX, this->height());
         }
-        startGridX += gridCol;
 
-        QFontMetrics fm(font);
-        int pixelsW{fm.horizontalAdvance("100")};
-        int pixelsH{fm.height()};
-        painter.fillRect(200, 200, pixelsW, pixelsH, Qt::white);
-        painter.drawText(200, 200, pixelsW, pixelsH, Qt::AlignCenter, "100");
+
+        number = QString::number(-(x - startGridX) / _scale);
+        pixelsW = fm.horizontalAdvance(number);
+        pixelsH = fm.height();
+        double rectY = (y < 0 ? 5 : y > this->height() - pixelsH - 5 ? this->height() - pixelsH - 5 : y + 5);
+        QRect rX(startGridX + 5, rectY, pixelsW, pixelsH);
+        painter.fillRect(rX, Qt::white);
+        painter.drawText(rX, Qt::AlignCenter, number);
+
+        startGridX += gridCol;
 
         if (abs(startGridY - y) <= 1)
         {
@@ -166,6 +166,16 @@ void PlotterForm::drawAxes(QPainter &painter)
         {
             painter.drawLine(0, startGridY, this->width(), startGridY);
         }
+
+
+        number = QString::number((y - startGridY) / _scale);
+        pixelsW = fm.horizontalAdvance(number);
+        pixelsH = fm.height();
+        double rectX = (x < 0 ? 5 : x > this->width() - pixelsW - 5 ? this->width() - pixelsW - 5 : x + 5);
+        QRect rY(rectX, startGridY + 5, pixelsW, pixelsH);
+        painter.fillRect(rY, Qt::white);
+        painter.drawText(rY, Qt::AlignCenter, number);
+
         startGridY += gridRow;
     }
 }
